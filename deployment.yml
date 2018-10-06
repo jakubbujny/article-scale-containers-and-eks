@@ -16,6 +16,9 @@ spec:
         image: jazzdd/alpine-flask:python3
         command: ["sh"]
         args: ["-c", "printf \"import flask\\nimport uuid\\nimport hashlib\\napp = flask.Flask(__name__)\\n@app.route(\\\"/\\\")\\ndef hello():\\n    for i in range(0,800000):\\n     hashlib.sha224(uuid.uuid4().hex.upper()[0:6].encode()).hexdigest()\\n    return \\\"Done\\\"\\napp.run(host=\\\"0.0.0.0\\\", threaded=True)\" > script.py && python3 script.py"]
+        resources:
+          requests:
+            cpu: "250m"
         ports:
         - name: http-port
           containerPort: 5000

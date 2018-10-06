@@ -32,6 +32,30 @@ resource "aws_iam_role_policy_attachment" "eks-node-AmazonEC2ContainerRegistryRe
   role       = "${aws_iam_role.eks-node.name}"
 }
 
+resource "aws_iam_role_policy" "for-autoscaler" {
+  name = "for-autoscaler"
+  policy = <<POLICY
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "autoscaling:DescribeAutoScalingGroups",
+                "autoscaling:DescribeAutoScalingInstances",
+                "autoscaling:SetDesiredCapacity",
+                "autoscaling:DescribeTags",
+                "autoscaling:TerminateInstanceInAutoScalingGroup"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+POLICY
+  role = "${aws_iam_role.eks-node.name}"
+}
+
+
 resource "aws_iam_instance_profile" "eks-node" {
   name = "eks-node"
   role = "${aws_iam_role.eks-node.name}"
@@ -82,6 +106,12 @@ resource "aws_autoscaling_group" "node" {
   min_size             = 1
   name                 = "eks"
   vpc_zone_identifier  = ["${aws_subnet.eks_a.id}"]
+
+  tag {
+    key = "k8s.io/cluster-autoscaler/enabled"
+    value = "whatever"
+    propagate_at_launch = false
+  }
 
   tag {
     key                 = "Name"

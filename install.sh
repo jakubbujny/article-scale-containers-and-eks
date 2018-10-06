@@ -12,6 +12,7 @@ cd ..
 
 ./kubectl.sh apply -f metrics-server/deploy/1.8+/
 
+./kubectl.sh apply -f autoscaler.yml
 
 ./kubectl.sh apply -f config-map-aws-auth.yaml
 
