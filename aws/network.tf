@@ -129,25 +129,6 @@ resource "aws_security_group_rule" "eks-node-ingress-self" {
   type                     = "ingress"
 }
 
-resource "aws_security_group_rule" "eks-node-ingress-kafka" {
-  description              = "Allow kafka communication"
-  from_port                = 30002
-  to_port                  = 30002
-  protocol                 = "tcp"
-  security_group_id        = "${aws_security_group.eks-node.id}"
-  cidr_blocks              = ["0.0.0.0/0"]
-  type                     = "ingress"
-}
-
-resource "aws_security_group_rule" "eks-node-ingress-debezium" {
-  description              = "Allow debezium connection"
-  from_port                = 30001
-  to_port                  = 30001
-  protocol                 = "tcp"
-  security_group_id        = "${aws_security_group.eks-node.id}"
-  cidr_blocks              = ["0.0.0.0/0"]
-  type                     = "ingress"
-}
 
 resource "aws_security_group_rule" "eks-node-ingress-cluster" {
   description              = "Allow worker Kubelets and pods to receive communication from the cluster control plane"
@@ -156,6 +137,16 @@ resource "aws_security_group_rule" "eks-node-ingress-cluster" {
   security_group_id        = "${aws_security_group.eks-node.id}"
   source_security_group_id = "${aws_security_group.eks-cluster.id}"
   to_port                  = 65535
+  type                     = "ingress"
+}
+
+resource "aws_security_group_rule" "eks-node-ingress-cluster-metrics" {
+  description              = "Allow worker Kubelets and pods to receive communication from the cluster control plane - metrics server"
+  from_port                = 443
+  protocol                 = "tcp"
+  security_group_id        = "${aws_security_group.eks-node.id}"
+  source_security_group_id = "${aws_security_group.eks-cluster.id}"
+  to_port                  = 443
   type                     = "ingress"
 }
 

@@ -10,9 +10,8 @@ terraform output config-map-aws-auth > ../config-map-aws-auth.yaml
 
 cd ..
 
-#./kubectl.sh apply -f https://raw.githubusercontent.com/aws/amazon-vpc-cni-k8s/release-1.1/config/v1.1/calico.yaml
+./kubectl.sh apply -f metrics-server/deploy/1.8+/
 
-./kubectl.sh apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/heapster.yaml
 
 ./kubectl.sh apply -f config-map-aws-auth.yaml
 
